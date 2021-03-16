@@ -42,16 +42,25 @@ export const deleteAll = async (req, res) => {
 };
 
 export const createRt = async (req, res) => {
+
     const { id } = req.params;
     req.body.tweet = id;
     req.body.author = req.user._id;
     const rt = new Rt(req.body);
     await rt.save();
+
+    const tweet = await Tweet.findById(id);
+    tweet.shares.push(rt._id);
+    await tweet.save();
+
     res.send(rt);
 };
 
 export const removeRt = async (req, res) => {
     const { id, rtId } = req.params;
     await Rt.findByIdAndDelete(rtId);
+    const tweet = await Tweet.findById(id).populate("shares");
+    tweet.shares.pull(rtId);
+    await tweet.save();
     res.send(tweet);
 };

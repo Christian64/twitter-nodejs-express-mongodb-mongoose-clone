@@ -28,7 +28,17 @@ passport.initialize();
 import userRoutes from "./user/routes";
 app.use("/user", userRoutes);
 import tweetRoutes from "./tweet/route";
-app.use("/tweet", passport.authenticate('jwt', { session: false }), tweetRoutes);
+app.use(
+    "/tweet",
+    passport.authenticate("jwt", { session: false }),
+    tweetRoutes
+);
+import commentRoutes from "./comment/route";
+app.use(
+    "/tweet",
+    passport.authenticate("jwt", { session: false }),
+    commentRoutes
+);
 
 app.set("port", process.env.PORT || 3000);
 
