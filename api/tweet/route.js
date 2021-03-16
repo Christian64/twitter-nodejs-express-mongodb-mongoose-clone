@@ -7,6 +7,8 @@ import {
     tweetDelete,
     createRt,
     removeRt,
+    createLike,
+    deleteLike
 } from "./controller";
 const routes = Router();
 
@@ -16,5 +18,7 @@ routes.route("/:id").get(tweetId).delete(tweetDelete);
 routes.post("/create", create);
 routes.post("/:id/rt", createRt);
 routes.delete("/:id/rt/:rtId", removeRt);
+routes.post("/:id/like", createLike);
+routes.delete("/:id/like/:likeId", deleteLike);
 
 export default routes;

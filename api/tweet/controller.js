@@ -1,6 +1,7 @@
 import Tweet from "./model";
 import User from "../user/model";
 import Rt from "../rt/model";
+import Like from "../like/model";
 
 export const create = async (req, res) => {
     try {
@@ -64,3 +65,36 @@ export const removeRt = async (req, res) => {
     await tweet.save();
     res.send(tweet);
 };
+
+
+export const createLike = async (req, res) => {
+    const { id } = req.params;
+    req.body.author = req.user._id;
+    req.body.tweet = id;
+    try{
+        const like = new Like(req.body);
+        await like.save();
+        const tweet = await Tweet.findById(id);
+        tweet.likes.push(like._id);
+        await tweet.save();
+        res.status(200).json(tweet);
+    }
+    catch (err){
+        console.log("This is the error:", err);
+    }
+}
+
+export const deleteLike = async (req, res) => {
+    const { id, likeId } = req.params;
+    try{
+        await Like.findByIdAndDelete(likeId);
+        const tweet = await Tweet.findById(id).populate("likes");
+        tweet.likes.pull(likeId);
+        await tweet.save();
+        res.status(200).json(tweet);
+    }
+    catch (err){
+        console.log("This is the error",err);
+    }
+
+}
